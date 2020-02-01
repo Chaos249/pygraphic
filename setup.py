@@ -10,6 +10,7 @@ def draw_image(img):
 	image = pyglet.resource.image(img)
 	return image
 
+#final draw funciton
 @window.event
 def on_draw():
 	window.clear()
