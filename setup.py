@@ -3,7 +3,7 @@ import pyglet
 window = pyglet.window.Window(800, 400, "Test")
 
 def draw_label(name, x_int, y_int):
-	lable = pyglet.text.Label(name, x = x_int, y = y_int)
+	label = pyglet.text.Label(name, x = x_int, y = y_int)
 	return label
 
 @window.event
