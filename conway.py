@@ -9,7 +9,7 @@ def makeMatrix(x_size, y_size):
     for x in range(x_size):
         x_idx = []
         for y in range(y_size):
-            x_idx.append("")
+            x_idx.append(" ")
         ptui_matrix.append(x_idx)
     return ptui_matrix
 
@@ -20,10 +20,8 @@ def prettyPrint(matrix):
     return p.get_string(header = False, border = False)
 
 # Big boy shit
-def gameOfLife(size, elems):
-    current_m = makeMatrix(size, size)
-    current_m = populateMatrix(current_m, size, elems)
-
+def gameOfLife(matrix, size, elems):
+    current_m = matrix
     future_m = makeMatrix(size, size)
 
     for x in range(0, size):
@@ -31,10 +29,10 @@ def gameOfLife(size, elems):
             elem = current_m[x][y]
             neighbors = countNeighbors(current_m, x, y)
 
-            if elem == "" and neighbors == 3:
-                future_m[x][y] = "■"
-            elif elem == "■" and (neighbors < 2 or neighbors > 3):
-                future_m[x][y] = ""
+            if elem == " " and neighbors == 3:
+                future_m[x][y] = "█"
+            elif elem == "█" and (neighbors < 2 or neighbors > 3):
+                future_m[x][y] = " "
             else:
                 future_m[x][y] = elem
 
@@ -44,45 +42,50 @@ def gameOfLife(size, elems):
 
     return current_m
 
+def initGameOfLife(size, elems):
+    matrix = makeMatrix(size, size)
+    matrix = populateMatrix(matrix, size, elems)
+    return matrix
+
 def countNeighbors(matrix, x, y):
     count = 0
     try:
-        if matrix[x + 1][y] != "":
+        if matrix[x + 1][y] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x + 1][y - 1] != "":
+        if matrix[x + 1][y - 1] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x][y - 1] != "":
+        if matrix[x][y - 1] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x - 1][y - 1] != "":
+        if matrix[x - 1][y - 1] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x - 1][y] != "":
+        if matrix[x - 1][y] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x - 1][y + 1] != "":
+        if matrix[x - 1][y + 1] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x][y + 1] != "":
+        if matrix[x][y + 1] != " ":
             count += 1
     except:
         pass
     try:
-        if matrix[x + 1][y + 1] != "":
+        if matrix[x + 1][y + 1] != " ":
             count += 1
     except:
         pass
@@ -90,7 +93,7 @@ def countNeighbors(matrix, x, y):
 
 def populateMatrix(matrix, size, elems):
     for i in range(elems):
-        matrix[random.randrange(0, size)][random.randrange(0, size)] = "■"
+        matrix[random.randrange(0, size)][random.randrange(0, size)] = "█"
     return matrix
 
 """if __name__ == "__main__":
