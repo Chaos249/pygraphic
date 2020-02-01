@@ -1,27 +1,51 @@
-import pyglet
-from pyglet.gl import *
 
-from shader import Shader
+from prettytable import PrettyTable
 
-window = pyglet.window.Window(800, 400, "Modus Operandi")
+import conway
 
-def draw_label(name, x_int, y_int):
-	label = pyglet.text.Label(name, x = x_int, y = y_int)
-	return label
+import sys
+from random import choice, randrange
+from string import ascii_letters
 
-def draw_image(img):
-	image = pyglet.resource.image(img)
-	return image
+import pygame as pg
 
-#final draw funciton
-@window.event
-def on_draw():
-	window.clear()
-	image = draw_image("test.png")
+def main():
 
-	image.blit(182, 0) # these are cartesian coordinates
-	draw_label("test label", 50, 100).draw()
+    m = conway.gameOfLife(10, 100)
+    m_string = conway.prettyPrint(m)
 
-if __name__ == "__main__":
-	pyglet.app.run()
+    info = pg.display.Info()
+    screen = pg.display.set_mode((info.current_w, info.current_h), pg.FULLSCREEN)
+    screen_rect = screen.get_rect()
+    font = pg.font.Font(None, 45)
+    clock = pg.time.Clock()
+    color = (randrange(256), randrange(256), randrange(256))
+    txt = font.render(m_string, True, color)
+    timer = 10
+    done = False
 
+    while not done:
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    done = True
+
+        timer -= 1
+        # Update the text surface and color every 10 frames.
+        if timer <= 0:
+            timer = 10
+            color = (randrange(256), randrange(256), randrange(256))
+            txt = font.render(m_string, True, color)
+
+        screen.fill((10, 10, 10))
+        screen.blit(txt, txt.get_rect(center=screen_rect.center))
+
+        pg.display.flip()
+        clock.tick(30)
+
+
+if __name__ == '__main__':
+    pg.init()
+    main()
+    pg.quit()
+    sys.exit()
