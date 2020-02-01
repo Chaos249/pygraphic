@@ -1,4 +1,7 @@
 import pyglet
+from pyglet.gl import *
+
+from shader import Shader
 
 window = pyglet.window.Window(800, 400, "Modus Operandi")
 
@@ -15,6 +18,7 @@ def draw_image(img):
 def on_draw():
 	window.clear()
 	image = draw_image("test.png")
+
 	image.blit(182, 0) # these are cartesian coordinates
 	draw_label("test label", 50, 100).draw()
 
