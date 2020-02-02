@@ -3,47 +3,47 @@ import conway
 import pygame
 pygame.init()
 
+BLACK = (10, 10, 10)
+WHITE = (255, 255, 255)
+MARGIN = 0
+W = 5
+H = 5
 
-SIZE = WIDTH, HEIGHT = (550, 450)
-FPS = 30
-screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
+def renderGrid(size, elems):
+    matrix = conway.initGameOfLife(size, elems)
+    done = False
+    while not done:
 
-def blit_text(surface, text, pos, font, color=pygame.Color('white')):
-    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
-    space = font.size(' ')[0]  # The width of a space.
-    max_width, max_height = surface.get_size()
-    x, y = pos
-    for line in words:
-        for word in line:
-            word_surface = font.render(word, 0, color)
-            word_width, word_height = word_surface.get_size()
-            if x + word_width >= max_width:
-                x = pos[0]  # Reset the x.
-                y += word_height  # Start on new row.
-            surface.blit(word_surface, (x, y))
-            x += word_width + space
-        x = pos[0]  # Reset the x.
-        y += word_height  # Start on new row.
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    done = True
 
+        for row in range(size):
+            for column in range(size):
+                color = BLACK
+                if matrix[row][column] == 1:
+                    color = WHITE
+                pygame.draw.rect(screen, color, [(MARGIN + W) * column + MARGIN, (MARGIN + H) * row + MARGIN, W, H])
 
-size = 80
-elems = 2500
-matrix = conway.initGameOfLife(size, elems)
+        matrix = conway.gameOfLife(matrix, size)
 
-font = pygame.font.SysFont('Arial', 4)
+        clock.tick(60)
+        pygame.display.flip()
 
-while True:
-    dt = clock.tick(FPS) / 1000
+def initDisplay(size, fullscreen):
+    pygame.display.set_caption("Modus Operandi")
+    if fullscreen:
+        screen = pygame.display.set_mode([size[0]*5, size[1]*5] , pygame.FULLSCREEN)
+    else:
+        screen = pygame.display.set_mode([size[0]*5, size[1]*5])
+    return screen
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            quit()
+if __name__ == "__main__":
+    size = 80
+    elems = 1000
 
-    matrix = conway.gameOfLife(matrix, size, elems)
-    m_string = conway.prettyPrint(matrix)
-    text = m_string
-    screen.fill((10, 10, 10))
-    blit_text(screen, text, (20, 20), font)
-    pygame.display.update()
+    screen = initDisplay([size, size], False)
+    renderGrid(size, elems)
