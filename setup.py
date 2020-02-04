@@ -6,6 +6,7 @@ pygame.init()
 BLACK = (10, 10, 10)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 MARGIN = 0
 W = 5
 H = 5
@@ -14,10 +15,13 @@ clock = pygame.time.Clock()
 
 def renderGrid(size, elems, additionals):
     count = 0
+    board_points = 0
+    player_points = 0
     matrix = cw.initGameOfLife(size, elems)
     player_index = cw.setCharacter(matrix, size)
 
     done = False
+    state = False
     while not done:
         count += 1
 
@@ -27,6 +31,12 @@ def renderGrid(size, elems, additionals):
         if additionals:
             if count % 100 == 0:
                 matrix = cw.addMore(matrix, size)
+            if count % 25 == 0 and board_points <= 10:
+                matrix = cw.addBoardPoints(matrix, size)
+                board_points += 1
+
+        if state:
+            done = True
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -40,9 +50,12 @@ def renderGrid(size, elems, additionals):
                     color = WHITE
                 if matrix[row][column] == 2:
                     color = RED
+                if matrix[row][column] == 3:
+                    color = GREEN
                 pygame.draw.rect(screen, color, [(MARGIN + W) * column + MARGIN, (MARGIN + H) * row + MARGIN, W, H])
 
-        matrix = cw.gameOfLife(matrix, size)
+        matrix, state, player_points = cw.gameOfLife(matrix, size)
+        #print("current points : ", player_points)
 
         clock.tick(60)
 
@@ -58,26 +71,26 @@ def controlPlayer(matrix, player_index):
 
     if key[pygame.K_LEFT]:
         matrix[player_index[1]][player_index[0]] = 0
-        player_index[0] = player_index[0] - 2
+        player_index[0] = player_index[0] - 1
         matrix[player_index[1]][player_index[0]] = 2
     if key[pygame.K_RIGHT]:
         matrix[player_index[1]][player_index[0]] = 0
-        player_index[0] = player_index[0] + 2
+        player_index[0] = player_index[0] + 1
         matrix[player_index[1]][player_index[0]] = 2
     if key[pygame.K_UP]:
         matrix[player_index[1]][player_index[0]] = 0
-        player_index[1] = player_index[1] - 2
+        player_index[1] = player_index[1] - 1
         matrix[player_index[1]][player_index[0]] = 2
     if key[pygame.K_DOWN]:
         matrix[player_index[1]][player_index[0]] = 0
-        player_index[1] = player_index[1] + 2
+        player_index[1] = player_index[1] + 1
         matrix[player_index[1]][player_index[0]] = 2
 
     return matrix, player_index
 
 if __name__ == "__main__":
     size = 150
-    elems = 2025
+    elems = 1000
 
     screen = initDisplay([size, size])
     renderGrid(size, elems, True)
