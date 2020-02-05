@@ -36,7 +36,6 @@ def gameOfLife(matrix, size):
             neighbors, neighbors_list = countNeighbors(current_m, x, y)
 
             if elem == 3 and neighbors >= 1:
-                print("point detected")
                 for i in neighbors_list:
                     if i == 2:
                         matrix[x][y] = 0

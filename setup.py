@@ -13,7 +13,7 @@ H = 5
 
 clock = pygame.time.Clock()
 
-def renderGrid(size, elems, additionals):
+def renderGrid(size, elems, additionals, screen):
     count = 0
     board_points = 0
     player_points = 0
@@ -34,6 +34,8 @@ def renderGrid(size, elems, additionals):
             if count % 25 == 0 and board_points <= 10:
                 matrix = cw.addBoardPoints(matrix, size)
                 board_points += 1
+            if count < 20:
+                text_to_screen(screen, "Modus Operandi", (size//2), (size//2))
 
         if state:
             done = True
@@ -54,8 +56,8 @@ def renderGrid(size, elems, additionals):
                     color = GREEN
                 pygame.draw.rect(screen, color, [(MARGIN + W) * column + MARGIN, (MARGIN + H) * row + MARGIN, W, H])
 
-        matrix, state, player_points = cw.gameOfLife(matrix, size)
-        #print("current points : ", player_points)
+        matrix, state, added_points = cw.gameOfLife(matrix, size)
+        player_points += added_points
 
         clock.tick(60)
 
@@ -65,6 +67,16 @@ def initDisplay(size):
     pygame.display.set_caption("Modus Operandi")
     screen = pygame.display.set_mode([size[0]*5, size[1]*5])
     return screen
+
+def text_to_screen(screen, text, x, y, size = 50,
+    color = (WHITE), font_type = 'freesansbold.ttf'):
+    try:
+        text = str(text)
+        font = pygame.font.Font(font_type, size)
+        text = font.render(text, True, color)
+        screen.blit(text, (x, y))
+    except:
+        print ('Font Error, saw it coming')
 
 def controlPlayer(matrix, player_index):
     key = pygame.key.get_pressed()
@@ -89,8 +101,9 @@ def controlPlayer(matrix, player_index):
     return matrix, player_index
 
 if __name__ == "__main__":
-    size = 150
+    size_x = 150
+    size_y = 300
     elems = 1000
 
-    screen = initDisplay([size, size])
-    renderGrid(size, elems, True)
+    screen = initDisplay([size_x, size_x])
+    renderGrid(size_x, elems, True, screen)
